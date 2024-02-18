@@ -5,12 +5,61 @@
     <meta charset="UTF-8">
     <title>Web Speech Recorder</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <p>
-        <button id="startRecording">Start recording</button>
-        <button id="stopRecording" disabled>Stop recording</button>
-    </p>
+<body class = "bg-gray-100 grid grid-cols-12">
+    <div class = " h-full">
+        <nav class = "bg-white col-span-1 flex flex-col col-start-1 text-center h-screen justify-between border-r-2 border-purple-950 md:py-3 xl:py-5 w-3/5">
+            <a
+            class="inline-block text-xl font-bold tracking-wider text-indigo-700 uppercase dark:text-light"
+            >
+            SKIBs
+            </a>
+            <div class = " md:space-y-5 xl:space-y-[10px] grid place-items-center">
+                <a class = "transition hover:bg-indigo-500 duration-300 text-center rounded-full bg-blue-50 md:h-[40px] xl:h-[60px] md:w-[40px] xl:w-[60px] grid h-screen place-items-center">
+                    H
+                </a>
+                <a class = "transition hover:bg-indigo-500 duration-300 text-center rounded-full bg-blue-50 md:h-[40px] xl:h-[60px] md:w-[40px] xl:w-[60px] grid h-screen place-items-center">
+                    M
+                </a>
+                <a class = "transition hover:bg-indigo-500 duration-300 text-center rounded-full bg-blue-50 md:h-[40px] xl:h-[60px] md:w-[40px] xl:w-[60px] grid h-screen place-items-center">
+                    I
+                </a>
+            </div>
+            <a
+            class="inline-block text-xl font-bold tracking-wider text-indigo-700 uppercase dark:text-light"
+            >
+            L
+            </a>
+        </nav> 
+    </div>
+    <div id = "main" class = "col-span-9">
+        <nav id = "top" class = "flex flex-row justify-between md:p-[20px] xl:p-[30px]">
+            <p class = "text-2xl">Dashboard</p>
+            <div class = "flex flex-row md:space-x-[20px] xl:space-x-[30px]">
+
+            </div>
+        </nav>
+        <div id = "recordBtn" class = "grid place-items-center md:space-y-10 xl:space-y-[15px]"> 
+            <p id = "label" class = "text-3xl">Record Yourself</p>
+            <button class="grid place-items-center bg-indigo-100  text-white font-bold py-2 px-4 items-center rounded-full md:w-[150px] xl:h-[200px] xl:w-[200px] drop-shadow-md transition ease-in-out delay-150 hover:-translate-y-1 hover:scale-105 hover:bg-indigo-200 duration-300 " id = "record">
+            <svg class = "h-3/4 w-3/4" id="Layer_1" data-name="Layer 1" viewBox="0 0 82.05 122.88" xmlns="http://www.w3.org/2000/svg">
+            <title>mic-microphone</title>
+            <path d="M59.89,20.83V52.3c0,27-37.73,27-37.73,0V20.83c0-27.77,37.73-27.77,37.73,0Zm-14.18,76V118.2a4.69,4.69,0,0,1-9.37,0V96.78a40.71,40.71,0,0,1-12.45-3.51A41.63,41.63,0,0,1,12.05,85L12,84.91A41.31,41.31,0,0,1,3.12,71.68,40.73,40.73,0,0,1,0,56a4.67,4.67,0,0,1,8-3.31l.1.1A4.68,4.68,0,0,1,9.37,56a31.27,31.27,0,0,0,2.4,12.06A32,32,0,0,0,29,85.28a31.41,31.41,0,0,0,24.13,0,31.89,31.89,0,0,0,10.29-6.9l.08-.07a32,32,0,0,0,6.82-10.22A31.27,31.27,0,0,0,72.68,56a4.69,4.69,0,0,1,9.37,0,40.65,40.65,0,0,1-3.12,15.65A41.45,41.45,0,0,1,70,85l-.09.08a41.34,41.34,0,0,1-11.75,8.18,40.86,40.86,0,0,1-12.46,3.51Z" style="fill: rgb(110, 133, 254);"/>
+            </svg>
+            </button>
+        </div>
+        <div class = "md:py-[50px] xl:py-[75px] space-y-[20px]">
+            <p class = " font-semibold text-3xl">Your Skibs</p>
+
+        </div>
+    </div>
+    <div class = "col-span-2 h-full bg-white border-l-2 border-purple-950">
+        sd
+    </div>
+
+
+    
 </body>
 <script>
     navigator
@@ -45,19 +94,31 @@
             console.log(data);
         });
     }
-    startRecording.onclick = e => {
-        console.log('Recording are started..');
-        startRecording.disabled = true;
-        stopRecording.disabled = false;
-        audioChunks = [];
-        rec.start();
-    };
-
-    stopRecording.onclick = e => {
-        console.log("Recording are stopped.");
-        startRecording.disabled = false;
-        stopRecording.disabled = true;
-        rec.stop();
+    let recording = false;
+    record.onclick = e => {
+        if (!recording) {
+            console.log('Recording are started..');
+            recording = true;
+            audioChunks = [];
+            rec.start();
+            document.getElementById("record").classList.add("animation-pulse");
+            document.getElementById("label").innerHTML = "Recording..."
+        }
+        else {
+            recording = false;
+            console.log("Recording are stopped.");
+            document.getElementById("record").classList.remove("animation-pulse");
+            document.getElementById("label").innerHTML = "Record Yourself";
+            rec.stop();
+        }
+        
+        
     };
 </script>
 </html>
+<!-- <div id = "recordBtn"> 
+        <button class="bg-blue-900 hover:bg-blue-800 text-white font-bold py-2 px-4 rounded inline-flex items-center" id = "record">
+            <svg class="fill-current w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M13 8V2H7v6H2l8 8 8-8h-5zM0 18h20v2H0v-2z"/></svg>
+            <span>Start Recording</span>
+        </button>
+    </div> -->
