@@ -1,8 +1,28 @@
 import os
 import uuid
 from flask import Flask, flash, request, redirect, render_template
+import matplotlib.pyplot as plt
 
 UPLOAD_FOLDER = 'files'
+
+# x axis values  
+x = [1,2,3]  
+# corresponding y axis values  
+y = [2,4,1]  
+    
+# plotting the points   
+plt.plot(x, y)  
+    
+# naming the x axis  
+plt.xlabel('x - axis')  
+# naming the y axis  
+plt.ylabel('y - axis')  
+    
+# giving a title to my graph  
+plt.title('My first graph!')  
+    
+# function to show the plot  
+plt.show()  
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
