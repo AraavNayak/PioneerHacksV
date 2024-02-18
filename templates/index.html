@@ -31,6 +31,9 @@
         <button id="stopRecording" disabled>Stop recording</button>
         <div id="graph-area"></div>
     </p>
+    {% for element in list_to_send%}
+        <p>{{element}}</p>
+    {% endfor %}
 </body>
 <script>
     navigator
@@ -71,16 +74,16 @@
             startRecording.disabled = true;
             stopRecording.disabled = false;
             audioChunks = [];
-            setInterval(function () {
-                console.log("Recording are stopped.");
-                startRecording.disabled = false;
-                stopRecording.disabled = true;
-                rec.stop();
-                rec.start();
-                startRecording.disabled = true;
-                stopRecording.disabled = false;
-                audioChunks = [];
-            }, 3000);
+            // setInterval(function () {
+            //     console.log("Recording are stopped.");
+            //     startRecording.disabled = false;
+            //     stopRecording.disabled = true;
+            //     rec.stop();
+            //     rec.start();
+            //     startRecording.disabled = true;
+            //     stopRecording.disabled = false;
+            //     audioChunks = [];
+            // }, 3000);
         //}
     };
 
