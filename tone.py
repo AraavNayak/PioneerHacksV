@@ -66,9 +66,10 @@ def get_tone_graph(file_name):
     dom_freq = np.divide(dom_freq, 10)
 
     plt.plot(new_time, dom_freq)
+    plt.title("Tone (Frequency) Analysis")
     plt.xlabel("time (s)")
     plt.ylabel("dominant frequency - tone in Hz (adjusted)")
-    plt.show()
+    plt.savefig('static/tone.png')
 
 
     
