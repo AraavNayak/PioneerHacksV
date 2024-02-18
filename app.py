@@ -198,6 +198,8 @@ import speech_recognition as sr
 import wave
 from pydub import AudioSegment
 import subprocess
+import soundfile
+import wave
 
 UPLOAD_FOLDER = 'files'
 
