@@ -1,5 +1,5 @@
 import speech_recognition as sr
-from pydub import AudioSegment
+import subprocess
 import os
 import uuid
 from collections import Counter
@@ -9,6 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import wave, sys
 import pyaudioconvert as pac
+import soundfile
+import wave
 
 UPLOAD_FOLDER = 'files'
 
@@ -80,9 +82,12 @@ def save_record():
         return redirect(request.url)
     
     num = len(os.listdir('files'))
-    file_name = "test" + str(num) + ".wav" #shine chang here
+    file_name = f"test{str(num)}.mp3" #shine chang here
     full_file_name = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+    print(full_file_name)
     file.save(full_file_name)
+    #convert to .wav
+    subprocess.run(["ffmpeg", "-i", full_file_name, os.path.join(app.config['UPLOAD_FOLDER'], "asdfasdf.wav")]) 
     return '<h1>Success</h1>'
 
 def get_most_common_words(file_path):
@@ -103,48 +108,61 @@ def get_most_common_words(file_path):
 def visualize(path: str):
    
     # reading the audio file
-    raw = wave.open(path)
-     
-    # reads all the frames 
-    # -1 indicates all or max frames
-    signal = raw.readframes(-1)
-    signal = np.frombuffer(signal, dtype ="int16")
-     
-    # gets the frame rate
-    f_rate = raw.getframerate()
- 
-    # to Plot the x-axis in seconds 
-    # you need get the frame rate 
-    # and divide by size of your signal
-    # to create a Time Vector 
-    # spaced linearly with the size 
-    # of the audio file
-    time = np.linspace(
-        0, # start
-        len(signal) / f_rate,
-        num = len(signal)
-    )
- 
-    # using matplotlib to plot
-    # creates a new figure
-    plt.figure(1)
-     
-    # title of the plot
-    plt.title("Sound Wave")
-     
-    # label of x-axis
-    plt.xlabel("Time")
+
     
-    # actual plotting
-    plt.plot(time, signal)
-     
-    # shows the plot 
-    # in new window
-    plt.show()
- 
-    # you can also save
-    # the plot using
-    # plt.savefig('filename')
+
+    # Read and rewrite the file with soundfile
+    data, samplerate = soundfile.read(path)
+
+
+
+    soundfile.write(path, data, samplerate)
+
+    # Now try to open the file with wave
+    with wave.open(path) as raw:
+        print('File opened!')
+        # raw = wave.open(path)
+        
+        # reads all the frames 
+        # -1 indicates all or max frames
+        signal = raw.readframes(-1)
+        signal = np.frombuffer(signal, dtype ="int16")
+        
+        # gets the frame rate
+        f_rate = raw.getframerate()
+    
+        # to Plot the x-axis in seconds 
+        # you need get the frame rate 
+        # and divide by size of your signal
+        # to create a Time Vector 
+        # spaced linearly with the size 
+        # of the audio file
+        time = np.linspace(
+            0, # start
+            len(signal) / f_rate,
+            num = len(signal)
+        )
+    
+        # using matplotlib to plot
+        # creates a new figure
+        plt.figure(1)
+        
+        # title of the plot
+        plt.title("Amplitude (dB)")
+        
+        # label of x-axis
+        plt.xlabel("Time")
+        
+        # actual plotting
+        plt.plot(time, signal)
+        
+        # shows the plot 
+        # in new window
+        plt.show()
+    
+        # you can also save
+        # the plot using
+        # plt.savefig('filename')
 
 if __name__ == "__main__":
     file_path = 'output.txt'  # Replace with the path to your text file
@@ -157,8 +175,8 @@ if __name__ == "__main__":
     grah = len(os.listdir('files'))
     print("LENGTH" + str(grah))
     # path = 'files/test.wav'
- 
-    # visualize(path)
+    path = 'files/asdfasdf.wav'
+    visualize(path)
 
     #app.run()
     main()
