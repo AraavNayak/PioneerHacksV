@@ -54,8 +54,8 @@
 
     function sendData(data) {
         var form = new FormData();
-        form.append('file', data, 'data.mp3');
-        form.append('title', 'data.mp3');
+        form.append('file', data, 'data.wav');
+        form.append('title', 'data.wav');
         //Chrome inspector shows that the post data includes a file and a title.
         $.ajax({
             type: 'POST',
@@ -69,22 +69,10 @@
         });
     }
     startRecording.onclick = e => {
-        //for (let i = 0; i < 10; i++){
-            rec.start();
-            startRecording.disabled = true;
-            stopRecording.disabled = false;
-            audioChunks = [];
-            // setInterval(function () {
-            //     console.log("Recording are stopped.");
-            //     startRecording.disabled = false;
-            //     stopRecording.disabled = true;
-            //     rec.stop();
-            //     rec.start();
-            //     startRecording.disabled = true;
-            //     stopRecording.disabled = false;
-            //     audioChunks = [];
-            // }, 3000);
-        //}
+        rec.start();
+        startRecording.disabled = true;
+        stopRecording.disabled = false;
+        audioChunks = [];
     };
 
     stopRecording.onclick = e => {
