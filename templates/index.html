@@ -54,8 +54,8 @@
 
     function sendData(data) {
         var form = new FormData();
-        form.append('file', data, 'data.wav');
-        form.append('title', 'data.wav');
+        form.append('file', data, 'data.mp3');
+        form.append('title', 'data.mp3');
         //Chrome inspector shows that the post data includes a file and a title.
         $.ajax({
             type: 'POST',
