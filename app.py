@@ -6,6 +6,7 @@ from flask import Flask, flash, request, redirect, render_template
 import matplotlib.pyplot as plt
 import numpy as np
 import wave, sys
+import pyaudioconvert as pac
 
 UPLOAD_FOLDER = 'files'
 
@@ -34,7 +35,11 @@ def save_record():
         return redirect(request.url)
     file_name = str(uuid.uuid4()) + ".wav"
     full_file_name = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
+    
+    file_name = str(uuid.uuid4()) + "2.wav"
+    full_file_name = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
     file.save(full_file_name)
+    pac.convert_wav_to_16bit_mono(full_file_name, full_file_name)
     return '<h1>Success</h1>'
 
 def get_most_common_words(file_path):
