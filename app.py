@@ -15,25 +15,16 @@ import subprocess
 import soundfile
 import wave
 import numpy as np
-import matplotlib.pyplot as plt
 import base64
 from io import BytesIO
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
 from tone import get_tone_graph
+
 import librosa
 import librosa.display
             
-x = np.arange(0, 2*np.pi, 0.1)
-y = np.sin(x)
-fig, ax = plt.subplots()
-ax.plot(x, y)
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_title('Sinusoid')
-
-fig.savefig('static/cosine.png')
 
 # html = '<html>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</html>'
 
@@ -219,6 +210,7 @@ def main(file_name):
     audio_file = "files/"+file_name  # Provide the path to your audio file
     output_file = "output_files/output.txt"  # Provide the path for the output text file
     transcribed_text = transcribe_audio_with_timestamp(audio_file)
+    get_tone_graph(audio_file)
     if transcribed_text:
         # analyzed_text = analyze_speech(transcribed_text)
         print("Transcribed Text with Timestamps:")
@@ -236,7 +228,7 @@ def main(file_name):
     else:
         print("No pauses detected.")
 
-    plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed)
+    # plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed)
 
 def detect_pauses(audio_file, threshold=0.01, min_pause_duration=0.2):
     # Load the audio file
