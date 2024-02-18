@@ -77,7 +77,9 @@ def save_record():
     if file.filename == '':
         flash('No selected file')
         return redirect(request.url)
-    file_name = str(uuid.uuid4()) + ".wav"
+    
+    num = len(os.listdir('files'))
+    file_name = "test" + str(num) + ".wav" #shine chang here
     full_file_name = os.path.join(app.config['UPLOAD_FOLDER'], file_name)
     file.save(full_file_name)
     return '<h1>Success</h1>'
@@ -151,9 +153,11 @@ if __name__ == "__main__":
     for word, count in common_words:
         print(f"{word}: {count} times")
     
+    grah = len(os.listdir('files'))
+    print("LENGTH" + str(grah))
     # path = 'files/test.wav'
  
     # visualize(path)
 
-    #app.run()
+    app.run()
     main()
