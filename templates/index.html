@@ -72,7 +72,7 @@
         rec.ondataavailable = e => {
             audioChunks.push(e.data);
             if (rec.state == "inactive") {
-                let blob = new Blob(audioChunks, {type: 'audio/mpeg-3'});
+                let blob = new Blob(audioChunks, {type: 'audio/wav'});
                 sendData(blob);
             }
         }
@@ -80,7 +80,7 @@
 
     function sendData(data) {
         var form = new FormData();
-        form.append('file', data, 'data.mp3');
+        form.append('file', data, 'data.w');
         form.append('title', 'data.mp3');
         //Chrome inspector shows that the post data includes a file and a title.
         $.ajax({
