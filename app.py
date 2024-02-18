@@ -1,6 +1,7 @@
 import os
 import uuid
 from flask import Flask, flash, request, redirect, render_template
+import matplotlib.pyplot as plt
 
 UPLOAD_FOLDER = 'files'
 
