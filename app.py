@@ -87,7 +87,7 @@ def save_record():
     print(full_file_name)
     file.save(full_file_name)
     #convert to .wav
-    subprocess.run(["ffmpeg", "-i", full_file_name, os.path.join(app.config['UPLOAD_FOLDER'], "asdfasdf.wav")]) 
+    subprocess.run(["ffmpeg", "-i", full_file_name, os.path.join(app.config['UPLOAD_FOLDER'], f"{str(num)}.wav")]) 
     return '<h1>Success</h1>'
 
 def get_most_common_words(file_path):
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     grah = len(os.listdir('files'))
     print("LENGTH" + str(grah))
     # path = 'files/test.wav'
-    path = 'files/asdfasdf.wav'
+    path = 'files/24.wav'
     visualize(path)
 
     #app.run()
