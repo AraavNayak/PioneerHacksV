@@ -4,7 +4,7 @@ import os
 import uuid
 from collections import Counter
 import re
-from flask import Flask, flash, request, redirect, render_template
+from flask import Flask, flash, request, redirect, render_template, send_from_directory
 import matplotlib.pyplot as plt
 import numpy as np
 import wave, sys
@@ -14,33 +14,17 @@ from pydub import AudioSegment
 import subprocess
 import soundfile
 import wave
-import numpy as np
-import matplotlib.pyplot as plt
+import warnings
+from matplotlib.figure import Figure
 import base64
 from io import BytesIO
-import matplotlib.pyplot as plt
-import numpy as np
-from scipy.io import wavfile
-from tone import get_tone_graph
-import librosa
-import librosa.display
-            
-x = np.arange(0, 2*np.pi, 0.1)
-y = np.sin(x)
-fig, ax = plt.subplots()
-ax.plot(x, y)
-ax.set_xlabel('x')
-ax.set_ylabel('y')
-ax.set_title('Sinusoid')
+from flask import Response
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
-fig.savefig('static/cosine.png')
-
-# html = '<html>' + '<img src=\'data:image/png;base64,{}\'>'.format(encoded) + '</html>'
-
-# with open('templates/index.html','w') as f:
-#     f.write(html)
 
 UPLOAD_FOLDER = 'files'
+global energy_smoothed
+
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -142,23 +126,23 @@ def get_most_common_words(file_path):
         
 #         # shows the plot 
 #         # in new window
-#         plt.savefig('static/amplitude.png')
+#         plt.show()
     
 #         # you can also save
 #         # the plot using
 #         # plt.savefig('filename')
 
-if __name__ == "__main__":
-    file_path = 'output.txt'  # Replace with the path to your text file
-    common_words = get_most_common_words(file_path)
+# if __name__ == "__main__":
+#     file_path = 'output.txt'  # Replace with the path to your text file
+#     common_words = get_most_common_words(file_path)
 
-    print("Top 10 most common words (case-insensitive):")
-    for word, count in common_words:
-        print(f"{word}: {count} times")
+#     print("Top 10 most common words (case-insensitive):")
+#     for word, count in common_words:
+#         print(f"{word}: {count} times")
     
-    # path = 'files/test.wav'
+#     # path = 'files/test.wav'
  
-    # visualize(path)
+#     # visualize(path)
         
 
 
@@ -201,10 +185,10 @@ def transcribe_audio_with_timestamp(audio_file):
             print(f"Could not request results from Google Web Speech API; {e}")
             return None
 
-# # Function to analyze speech patterns
-# def analyze_speech(text):
-#     # Placeholder for speech analysis
-#     return text
+# Function to analyze speech patterns
+def analyze_speech(text):
+    # Placeholder for speech analysis
+    return text
 
 # Function to write transcribed and analyzed speech to a text file
 def write_to_file(transcribed_text, analyzed_text, output_file):
@@ -214,32 +198,16 @@ def write_to_file(transcribed_text, analyzed_text, output_file):
         # file.write("\nAnalyzed Speech:\n")
         # file.write(analyzed_text + "\n")
 
-# # Main function
-def main(file_name):
-    audio_file = "files/"+file_name  # Provide the path to your audio file
-    output_file = "output_files/output.txt"  # Provide the path for the output text file
-    transcribed_text = transcribe_audio_with_timestamp(audio_file)
-    if transcribed_text:
-        # analyzed_text = analyze_speech(transcribed_text)
-        print("Transcribed Text with Timestamps:")
-        print(transcribed_text)
-        # print("Analyzed Speech:", analyzed_text)
-        write_to_file(transcribed_text, "", output_file)
-        print("Output written to", output_file)
-    get_most_common_words(audio_file)  
-    print(audio_file)
-    pause_segments, y, sr, energy_smoothed = detect_pauses(audio_file)
-    if pause_segments:
-        print("Pauses detected in the following intervals:")
-        for segment in pause_segments:
-            print(f"- From {segment[0]:.2f} to {segment[1]:.2f} seconds")
-    else:
-        print("No pauses detected.")
 
-    plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed)
+
+import numpy as np
+import librosa
+import librosa.display
+import matplotlib.pyplot as plt
 
 def detect_pauses(audio_file, threshold=0.01, min_pause_duration=0.2):
     # Load the audio file
+    global y, pause_segments
     y, sr = librosa.load(audio_file)
 
     # Apply aggressive noise reduction if needed
@@ -268,18 +236,29 @@ def detect_pauses(audio_file, threshold=0.01, min_pause_duration=0.2):
 
     return pause_segments, y, sr, energy_smoothed
 
+
 def plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed):
-    plt.figure(figsize=(12, 8))
 
+    fig = Figure()
+    
     # Plot waveform
-    plt.subplot(2, 1, 1)
-    librosa.display.waveshow(y, sr=sr, alpha=0.5)
+    ax = fig.add_subplot(2, 1, 1)
+    #plt.subplot(2, 1, 1)
+    #librosa.display.waveshow(y, sr=sr, alpha=0.5)
     for segment in pause_segments:
-        plt.axvspan(segment[0], segment[1], color='r', alpha=0.3)
-    plt.xlabel('Time (s)')
-    plt.ylabel('Amplitude')
-    plt.title('Waveform with Pauses')
+        ax.axvspan(segment[0], segment[1], color='r', alpha=0.3)
+    ax.set_xlabel('Time (s)')
+    ax.set_ylabel('Amplitude')
+    ax.set_title('Waveform with Pauses')
 
+    return fig
+
+    output = BytesIO()
+    FigureCanvas(fig).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+
+    """
     # Convert energy to decibels (dB)
     energy_dB = librosa.amplitude_to_db(energy_smoothed, ref=np.max)
 
@@ -293,10 +272,34 @@ def plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed):
     plt.title('Volume vs Time (|dB|)')
 
     plt.tight_layout()
-    plt.savefig('static/amplitude.png')
+    plt.show()
+    """
+    #plt.savefig("squares.png")
+
+#@app.route('/')
+
+
+@app.route("/plot.png")
+def plot_png():
+    fig = plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed)
     
+    output = BytesIO()
+    FigureCanvas(plt.gcf()).print_png(output)
+    return Response(output.getvalue(), mimetype='image/png')
+
+# Main function
+def main(file_name):
+    #  usage
+    audio_file = "files/test0.wav"
+    pause_segments, y, sr, energy_smoothed = detect_pauses(audio_file)
+    if pause_segments:
+        print("Pauses detected in the following intervals:")
+        for segment in pause_segments:
+            print(f"- From {segment[0]:.2f} to {segment[1]:.2f} seconds")
+    else:
+        print("No pauses detected.")
+    plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed)  
 
 if __name__ == "__main__":
     #main()
-
     app.run()
