@@ -1,6 +1,6 @@
 # PioneerHacksV
 
-We are very excited to present our product SKIB for the PioneerHacks V Hackathon!
+We are very excited to present our product SKIB for the PioneerHacks V Hackathon! Here's a detailed description of SKIB's objective and implementation.
 
 ### Mission
 Our mission is to ensure everyone is able to develop their communication skills so they can express their ideas clearly.
