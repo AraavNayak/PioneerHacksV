@@ -22,8 +22,7 @@ Backend: <pre> Flask, OpenAI API, Librosa, SpeechRecognition </pre>
 In the future, we will adapt this technology for different languages. Currently computer speech recognition works with English, Chinese, Hindi, Spanish & French, however; due to the different structures of those languages, they each will need their own set of speech quality analysis rules.
 Furthermore, we aim to make SKIB more mobile friendly through an app. 
 
-### Live Demo of SKIB Frontend
-<img width="962" alt="Screenshot 2024-02-19 at 11 32 33 PM" src="https://github.com/AraavNayak/PioneerHacksV/assets/104335810/7ac39c75-9d79-4b50-979a-6d05b7cad064">
+
 
 
 
