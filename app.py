@@ -21,7 +21,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.io import wavfile
 from tone import get_tone_graph
-
+from waveform import plot_waveform_with_pauses
+from waveform import detect_pauses
 import librosa
 import librosa.display
             
@@ -210,7 +211,8 @@ def main(file_name):
     audio_file = "files/"+file_name  # Provide the path to your audio file
     output_file = "output_files/output.txt"  # Provide the path for the output text file
     transcribed_text = transcribe_audio_with_timestamp(audio_file)
-    get_tone_graph(audio_file)
+    # get_tone_graph(audio_file)
+    # plot_waveform_with_pauses(detect_pauses(audio_file))
     if transcribed_text:
         # analyzed_text = analyze_speech(transcribed_text)
         print("Transcribed Text with Timestamps:")
@@ -220,13 +222,26 @@ def main(file_name):
         print("Output written to", output_file)
     get_most_common_words(audio_file)  
     print(audio_file)
-    pause_segments, y, sr, energy_smoothed = detect_pauses(audio_file)
-    if pause_segments:
-        print("Pauses detected in the following intervals:")
-        for segment in pause_segments:
-            print(f"- From {segment[0]:.2f} to {segment[1]:.2f} seconds")
-    else:
-        print("No pauses detected.")
+    from openai import OpenAI
+    client = OpenAI(api_key="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")
+
+    completion = client.chat.completions.create(
+    model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a expert with speeches and the correct term/vocabulary speeches. Go through the speech transcript and list the user's most used words and then suggest a variety of different words that can be used to deliver a stronger speech. Then, write out an example (could be short, similar to original length) which is enhanced by the vocabulary you are suggesting."},
+            {"role": "user", "content": "Now here is the user's speech: " + transcribed_text}
+    ]
+    )
+
+    print(completion.choices[0].message)
+    
+    # pause_segments, y, sr, energy_smoothed = detect_pauses(audio_file)
+    # if pause_segments:
+    #     print("Pauses detected in the following intervals:")
+    #     for segment in pause_segments:
+    #         print(f"- From {segment[0]:.2f} to {segment[1]:.2f} seconds")
+    # else:
+    #     print("No pauses detected.")
 
     # plot_waveform_with_pauses(y, sr, pause_segments, energy_smoothed)
 
