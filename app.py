@@ -223,7 +223,7 @@ def main(file_name):
     get_most_common_words(audio_file)  
     print(audio_file)
     from openai import OpenAI
-    client = OpenAI(api_key="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")
+    client = OpenAI(api_key="INSERT_KEY")
 
     completion = client.chat.completions.create(
     model="gpt-3.5-turbo",
